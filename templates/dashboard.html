@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Productivity Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>📘 Student Task System</h2>
+    <div>
+        <button onclick="goToTasks()">Tasks</button>
+        <button onclick="logout()">Logout</button>
+    </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard">
+
+    <div class="card">
+        <h3 id="totalTasks">0</h3>
+        <p>Total Tasks</p>
+    </div>
+
+    <div class="card">
+        <h3 id="completedTasks">0</h3>
+        <p>Completed</p>
+    </div>
+
+    <div class="card">
+        <h3 id="pendingTasks">0</h3>
+        <p>Pending</p>
+    </div>
+
+</div>
+
+<!-- QUICK ACTION -->
+<div class="container">
+    <h3>Quick Add Task</h3>
+
+    <input id="title" placeholder="Task Title">
+    <input id="desc" placeholder="Description">
+    <input type="date" id="date">
+
+    <button onclick="addTask()">Add Task</button>
+</div>
+
+<script>
+let user_id = localStorage.getItem("user_id");
+
+function loadDashboard() {
+    fetch(`http://127.0.0.1:5000/get_tasks/${user_id}`)
+    .then(res => res.json())
+    .then(data => {
+
+        let total = data.length;
+        let completed = data.filter(t => t.status === "completed").length;
+
+        document.getElementById("totalTasks").innerText = total;
+        document.getElementById("completedTasks").innerText = completed;
+        document.getElementById("pendingTasks").innerText = total - completed;
+    });
+}
+
+function addTask() {
+    fetch('http://127.0.0.1:5000/add_task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            user_id: user_id,
+            task_title: title.value,
+            description: desc.value,
+            due_date: date.value
+        })
+    })
+    .then(() => {
+        alert("Task Added");
+        loadDashboard();
+    });
+}
+
+function goToTasks() {
+    window.location.href = "tasks.html";
+}
+
+function logout() {
+    localStorage.removeItem("user_id");
+    window.location.href = "/login_page";
+}
+
+loadDashboard();
+</script>
+
+</body>
+</html>

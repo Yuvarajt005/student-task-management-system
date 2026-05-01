@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Task System - Register</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: linear-gradient(135deg, #06b6d4, #4f46e5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .register-box {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            width: 340px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        input {
+            width: 92%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        .toggle {
+            position: absolute;
+            right: 15px;
+            top: 12px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #555;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .msg {
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        .error { color: red; }
+        .success { color: green; }
+
+        a {
+            text-decoration: none;
+            color: #2563eb;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="register-box">
+    <h2>📝 Create Account</h2>
+
+    <input type="text" id="name" placeholder="Enter Name">
+    <input type="email" id="email" placeholder="Enter Email">
+
+    <div class="password-box">
+        <input type="password" id="password" placeholder="Enter Password">
+        <span class="toggle" onclick="togglePassword('password')">Show</span>
+    </div>
+
+    <div class="password-box">
+        <input type="password" id="confirmPassword" placeholder="Confirm Password">
+        <span class="toggle" onclick="togglePassword('confirmPassword')">Show</span>
+    </div>
+
+    <button id="registerBtn" onclick="register()">Register</button>
+
+    <div id="msg" class="msg"></div>
+
+    <p>Already have an account? <a href="/login_page">Login</a></p>
+</div>
+
+<script>
+function togglePassword(id) {
+    let field = document.getElementById(id);
+    field.type = field.type === "password" ? "text" : "password";
+}
+
+function register() {
+    let name = document.getElementById('name').value;
+    let email = document.getElementById('email').value;
+    let password = document.getElementById('password').value;
+    let confirmPassword = document.getElementById('confirmPassword').value;
+
+    let msg = document.getElementById('msg');
+    let btn = document.getElementById('registerBtn');
+
+    // validation
+    if (!name || !email || !password || !confirmPassword) {
+        msg.innerText = "All fields are required";
+        msg.className = "msg error";
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        msg.innerText = "Passwords do not match";
+        msg.className = "msg error";
+        return;
+    }
+
+    btn.innerText = "Registering...";
+    btn.disabled = true;
+
+    fetch('http://127.0.0.1:5000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.message.toLowerCase().includes("success")) {
+            msg.innerText = "Registration successful! Redirecting...";
+            msg.className = "msg success";
+
+            setTimeout(() => {
+                window.location.href = "/login_page";
+            }, 1500);
+        } else {
+            msg.innerText = data.message;
+            msg.className = "msg error";
+        }
+
+        btn.innerText = "Register";
+        btn.disabled = false;
+    });
+}
+</script>
+
+</body>
+</html>
