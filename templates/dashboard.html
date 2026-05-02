@@ -2,23 +2,143 @@
 <html>
 <head>
     <title>Student Productivity Dashboard</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; color: white; }
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); }
-        .navbar h2 { font-size: 20px; }
-        .navbar button { padding: 8px 15px; margin-left: 10px; border: none; border-radius: 6px; cursor: pointer; background: #ff4b5c; color: white; }
-        .dashboard { display: flex; justify-content: center; gap: 20px; margin: 30px; flex-wrap: wrap; }
-        .card { background: rgba(255,255,255,0.15); backdrop-filter: blur(15px); padding: 25px; border-radius: 15px; width: 150px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .card h3 { font-size: 28px; margin-bottom: 5px; }
-        .container { background: rgba(255,255,255,0.15); backdrop-filter: blur(15px); margin: 30px auto; padding: 25px; width: 90%; max-width: 500px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); text-align: center; }
-        input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 8px; border: none; outline: none; }
-        button.add-btn { width: 100%; padding: 12px; border: none; border-radius: 8px; background: linear-gradient(135deg, #00f2fe, #4facfe); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button.add-btn:hover { transform: scale(1.05); }
-        .task-box { background: rgba(255,255,255,0.2); padding: 12px; border-radius: 10px; margin: 10px 0; text-align: left; }
-        .task-box h4 { margin-bottom: 5px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar h2 {
+            font-size: 20px;
+        }
+
+        .navbar button {
+            padding: 8px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #ff4b5c;
+            color: white;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 15px;
+            width: 150px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            margin: 30px auto;
+            padding: 25px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        button.add-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.add-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .task-box {
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: left;
+        }
+
+        .task-box h4 {
+            margin-bottom: 5px;
+        }
+
+        .task-actions {
+            margin-top: 10px;
+        }
+
+        .task-actions button {
+            padding: 7px 10px;
+            margin: 4px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .complete-btn {
+            background: #28a745;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: black !important;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
     </style>
 </head>
 
@@ -97,6 +217,12 @@ function loadDashboard() {
                     <p>${task.description}</p>
                     <p><b>Due Date:</b> ${task.due_date}</p>
                     <p><b>Status:</b> ${task.status}</p>
+
+                    <div class="task-actions">
+                        <button class="complete-btn" onclick="markCompleted(${task.id})">Completed</button>
+                        <button class="edit-btn" onclick="editTask(${task.id})">Edit</button>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                    </div>
                 </div>
             `;
         });
@@ -111,17 +237,69 @@ function addTask() {
             user_id: user_id,
             task_title: document.getElementById("title").value,
             description: document.getElementById("desc").value,
-            due_date: document.getElementById("date").value
+            due_date: document.getElementById("date").value,
+            priority: "low"
         })
     })
     .then(res => res.json())
     .then(data => {
         alert(data.message);
+
         document.getElementById("title").value = "";
         document.getElementById("desc").value = "";
         document.getElementById("date").value = "";
+
         loadDashboard();
     });
+}
+
+function markCompleted(id) {
+    fetch(`/update_task/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            status: "completed"
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert(data.message);
+        loadDashboard();
+    });
+}
+
+function editTask(id) {
+    let newTitle = prompt("Enter new task title:");
+    let newDesc = prompt("Enter new description:");
+
+    if (newTitle && newDesc) {
+        fetch(`/update_task/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                task_title: newTitle,
+                description: newDesc
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            loadDashboard();
+        });
+    }
+}
+
+function deleteTask(id) {
+    if (confirm("Are you sure you want to delete this task?")) {
+        fetch(`/delete_task/${id}`, {
+            method: 'DELETE'
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            loadDashboard();
+        });
+    }
 }
 
 function goToTasks() {
