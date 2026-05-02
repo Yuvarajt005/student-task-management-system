@@ -3,37 +3,56 @@
 <head>
     <title>Student Task System - Register</title>
 
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
         body {
-            font-family: Arial;
-            background: linear-gradient(135deg, #06b6d4, #4f46e5);
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
+        /* Glass Card */
         .register-box {
-            background: rgba(255,255,255,0.95);
-            padding: 30px;
-            width: 340px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 35px;
+            width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             text-align: center;
+            color: white;
         }
 
         h2 {
             margin-bottom: 20px;
-            color: #1e293b;
+            font-weight: 600;
         }
 
         input {
-            width: 92%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        input::placeholder {
+            color: #ddd;
         }
 
         .password-box {
@@ -42,39 +61,47 @@
 
         .toggle {
             position: absolute;
-            right: 15px;
-            top: 12px;
+            right: 12px;
+            top: 14px;
             cursor: pointer;
-            font-size: 13px;
-            color: #555;
+            font-size: 12px;
+            color: #ddd;
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background: #2563eb;
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
+            padding: 12px;
             margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         button:hover {
-            background: #1d4ed8;
+            transform: scale(1.05);
         }
 
         .msg {
             margin-top: 12px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        .error { color: red; }
-        .success { color: green; }
+        .error { color: #ff6b6b; }
+        .success { color: #00ffcc; }
 
         a {
+            color: #00f2fe;
             text-decoration: none;
-            color: #2563eb;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -101,7 +128,9 @@
 
     <div id="msg" class="msg"></div>
 
-    <p>Already have an account? <a href="/login_page">Login</a></p>
+    <p style="margin-top:15px;">
+        Already have an account? <a href="/login_page">Login</a>
+    </p>
 </div>
 
 <script>
@@ -119,7 +148,6 @@ function register() {
     let msg = document.getElementById('msg');
     let btn = document.getElementById('registerBtn');
 
-    // validation
     if (!name || !email || !password || !confirmPassword) {
         msg.innerText = "All fields are required";
         msg.className = "msg error";
@@ -135,7 +163,7 @@ function register() {
     btn.innerText = "Registering...";
     btn.disabled = true;
 
-     fetch('/register', {
+    fetch('/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
@@ -143,7 +171,7 @@ function register() {
     .then(res => res.json())
     .then(data => {
 
-        if (data.message.toLowerCase().includes("success")) {
+        if (data.message && data.message.toLowerCase().includes("success")) {
             msg.innerText = "Registration successful! Redirecting...";
             msg.className = "msg success";
 
@@ -151,7 +179,7 @@ function register() {
                 window.location.href = "/login_page";
             }, 1500);
         } else {
-            msg.innerText = data.message;
+            msg.innerText = data.message || "Registration failed";
             msg.className = "msg error";
         }
 
