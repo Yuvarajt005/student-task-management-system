@@ -2,7 +2,110 @@
 <html>
 <head>
     <title>Student Productivity Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            min-height: 100vh;
+            color: white;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar h2 {
+            font-size: 20px;
+        }
+
+        .navbar button {
+            padding: 8px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #ff4b5c;
+            color: white;
+        }
+
+        /* DASHBOARD CARDS */
+        .dashboard {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            padding: 25px;
+            border-radius: 15px;
+            width: 150px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        /* ADD TASK */
+        .container {
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(15px);
+            margin: 30px auto;
+            padding: 25px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+        }
+
+        button.add-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #00f2fe, #4facfe);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.add-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
 </head>
 
 <body>
@@ -18,7 +121,6 @@
 
 <!-- DASHBOARD -->
 <div class="dashboard">
-
     <div class="card">
         <h3 id="totalTasks">0</h3>
         <p>Total Tasks</p>
@@ -33,10 +135,9 @@
         <h3 id="pendingTasks">0</h3>
         <p>Pending</p>
     </div>
-
 </div>
 
-<!-- QUICK ACTION -->
+<!-- QUICK ADD -->
 <div class="container">
     <h3>Quick Add Task</h3>
 
@@ -44,14 +145,15 @@
     <input id="desc" placeholder="Description">
     <input type="date" id="date">
 
-    <button onclick="addTask()">Add Task</button>
+    <button class="add-btn" onclick="addTask()">Add Task</button>
 </div>
 
 <script>
 let user_id = localStorage.getItem("user_id");
 
+/* LOAD DASHBOARD */
 function loadDashboard() {
-    fetch(`http://127.0.0.1:5000/get_tasks/${user_id}`)
+    fetch(`/get_tasks/${user_id}`)   // ✅ FIXED (no localhost)
     .then(res => res.json())
     .then(data => {
 
@@ -64,8 +166,9 @@ function loadDashboard() {
     });
 }
 
+/* ADD TASK */
 function addTask() {
-    fetch('http://127.0.0.1:5000/add_task', {
+    fetch('/add_task', {   // ✅ FIXED
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -81,8 +184,9 @@ function addTask() {
     });
 }
 
+/* NAVIGATION */
 function goToTasks() {
-    window.location.href = "tasks.html";
+    window.location.href = "/tasks_page";  // FIX route
 }
 
 function logout() {
