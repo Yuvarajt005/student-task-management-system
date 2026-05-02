@@ -153,7 +153,7 @@ let user_id = localStorage.getItem("user_id");
 
 /* LOAD DASHBOARD */
 function loadDashboard() {
-    fetch(`/get_tasks/${user_id}`)   // ✅ FIXED (no localhost)
+    fetch(`/get_tasks/${user_id}`)
     .then(res => res.json())
     .then(data => {
 
@@ -168,7 +168,7 @@ function loadDashboard() {
 
 /* ADD TASK */
 function addTask() {
-    fetch('/add_task', {   // ✅ FIXED
+    fetch('/add_task', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -186,7 +186,8 @@ function addTask() {
 
 /* NAVIGATION */
 function goToTasks() {
-    window.location.href = "/tasks_page";  // FIX route
+    // ✅ FIXED (no separate page, scroll to add task section)
+    document.querySelector(".container").scrollIntoView({ behavior: "smooth" });
 }
 
 function logout() {
